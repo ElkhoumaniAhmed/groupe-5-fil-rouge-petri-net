@@ -26,6 +26,26 @@ public class Transition {
         outputArcs.add(arc);
     }
 
+    public boolean removeArc(Arc arc) {
+        if (inputArcs.remove(arc)) {
+            return true;
+        }
+        return outputArcs.remove(arc);
+    }
+
+    public void removeArcsOf(Place place) {
+        for (int i = inputArcs.size() - 1; i >= 0; i--) {
+            if (inputArcs.get(i).getPlace() == place) {
+                inputArcs.remove(i);
+            }
+        }
+        for (int i = outputArcs.size() - 1; i >= 0; i--) {
+            if (outputArcs.get(i).getPlace() == place) {
+                outputArcs.remove(i);
+            }
+        }
+    }
+
     public boolean isFireable() {
         for (InputArc arc : inputArcs) {
             if (!arc.isActive()) {
