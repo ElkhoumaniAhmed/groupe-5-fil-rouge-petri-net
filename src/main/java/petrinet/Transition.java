@@ -3,11 +3,16 @@ package petrinet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A transition consumes tokens through its input arcs
+ * and produces tokens through its output arcs.
+ */
 public class Transition {
 
-    private List<InputArc> inputArcs = new ArrayList<>();
-    private List<OutputArc> outputArcs = new ArrayList<>();
+    private List<InputArc> inputArcs = new ArrayList<>();   // arcs place -> transition
+    private List<OutputArc> outputArcs = new ArrayList<>(); // arcs transition -> place
 
+    // Add an input arc (only one input arc per place)
     public void addInputArc(InputArc arc) {
         for (InputArc a : inputArcs) {
             if (a.getPlace() == arc.getPlace()) {
@@ -17,6 +22,7 @@ public class Transition {
         inputArcs.add(arc);
     }
 
+    // Add an output arc (only one output arc per place)
     public void addOutputArc(OutputArc arc) {
         for (OutputArc a : outputArcs) {
             if (a.getPlace() == arc.getPlace()) {
@@ -26,6 +32,7 @@ public class Transition {
         outputArcs.add(arc);
     }
 
+    // Remove an arc; returns true if it was found
     public boolean removeArc(Arc arc) {
         if (inputArcs.remove(arc)) {
             return true;
@@ -33,7 +40,9 @@ public class Transition {
         return outputArcs.remove(arc);
     }
 
+    // Remove all arcs linked to the given place
     public void removeArcsOf(Place place) {
+        // loop backwards so removing does not skip elements
         for (int i = inputArcs.size() - 1; i >= 0; i--) {
             if (inputArcs.get(i).getPlace() == place) {
                 inputArcs.remove(i);
@@ -46,6 +55,7 @@ public class Transition {
         }
     }
 
+    // Fireable only if every input arc is active
     public boolean isFireable() {
         for (InputArc arc : inputArcs) {
             if (!arc.isActive()) {
@@ -55,6 +65,8 @@ public class Transition {
         return true;
     }
 
+    // Fire the transition: consume inputs then produce outputs.
+    // Returns false (and changes nothing) if not fireable.
     public boolean fire() {
         if (!isFireable()) {
             return false;
